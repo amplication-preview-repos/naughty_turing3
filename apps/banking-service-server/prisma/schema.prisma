@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Transaction {
+  account       Account?                  @relation(fields: [accountId], references: [id])
+  accountId     String?
+  amount        Float?
+  createdAt     DateTime                  @default(now())
+  date          DateTime?
+  id            String                    @id @default(cuid())
+  transactionId String?
+  typeField     EnumTransactionTypeField?
+  updatedAt     DateTime                  @updatedAt
+}
+
+model Loan {
+  amount       Float?
+  createdAt    DateTime  @default(now())
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  customerId   String?
+  endDate      DateTime?
+  id           String    @id @default(cuid())
+  interestRate Float?
+  loanId       String?
+  startDate    DateTime?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Account {
+  accountNumber String?
+  accountType   EnumAccountAccountType?
+  balance       Float?
+  createdAt     DateTime                @default(now())
+  currency      String?
+  customer      Customer?               @relation(fields: [customerId], references: [id])
+  customerId    String?
+  id            String                  @id @default(cuid())
+  transactions  Transaction[]
+  updatedAt     DateTime                @updatedAt
+}
+
+model Customer {
+  accounts    Account[]
+  createdAt   DateTime  @default(now())
+  dateOfBirth DateTime?
+  email       String?
+  firstname   String?
+  id          String    @id @default(cuid())
+  lastname    String?
+  loans       Loan[]
+  phone       String?
+  updatedAt   DateTime  @updatedAt
+}
+
+enum EnumTransactionTypeField {
+  Option1
+}
+
+enum EnumAccountAccountType {
+  Option1
+}
